@@ -3,7 +3,9 @@ import {Button} from '@mui/material'
 
 const SampleButton = () => {
   return (
-    <Button>
+    <Button sx={{
+      width:"300px"
+    }}>
       Hello Button
     </Button>
   );
