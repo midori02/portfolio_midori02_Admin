@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
-import theme from '../src/mui/theme';
-import {createEmotionCache} from '../src/mui/createEmotionCache';
+import theme from '../mui/theme';
+import {createEmotionCache} from '../mui/createEmotionCache';
 
 export default class MyDocument extends Document {
   render() {
@@ -61,8 +61,10 @@ MyDocument.getInitialProps = async (ctx) => {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
+
   ctx.renderPage = () =>
     originalRenderPage({
+      // @ts-ignore
       enhanceApp: (App) => (props) => <App emotionCache={cache} {...props} />,
     });
 
