@@ -15,4 +15,5 @@ export const db = firebase.firestore()
 export const storage = firebase.storage()
 export const functions = firebase.functions()
 export const firebaseTimeStamp = firebase.firestore.Timestamp
-export const usersRef = db.collection('users')
+export type FirebaseTimestampType = firebase.firestore.Timestamp
+export const adminsRef = db.collection('admin')

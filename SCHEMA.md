@@ -21,9 +21,7 @@
 - content_id:string
 - created_at?: FirebaseTimestamp
 - description:string
-- genre:Object
-  - id:string
-  - name:string
+- genre: string
 - image:Array
   - id:string
   - path:string
