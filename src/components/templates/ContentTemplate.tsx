@@ -1,14 +1,18 @@
 import {FC,useState} from 'react';
+import {useRouter} from 'next/router'
 import { Box,Typography,Divider } from "@mui/material";
+import {useMutation} from 'react-query'
 
 import {ImageUploader} from '../image'
 import {TextInput,SelectBox,CheckBox,DateInput,PrimarySwitch} from '../Inputs'
 import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent,useSelect,useCheckBox} from '../../lib/customHooks'
+import {createContent} from '../../lib/contents'
 import {genreData,skillData} from '../../lib/datas'
 
 
 const ContentTemplate:FC = () => {
+  const router = useRouter()
   const [title,setTitle] = useState('')
   const [description,setDescription] = useState('')
   const [url,setUrl] = useState('')
@@ -20,6 +24,36 @@ const ContentTemplate:FC = () => {
   const [endMonth,setEndMonth] = useState('1')
   const [inProduction,setInProduction] = useState(false)
   const [image,setImage] = useState(undefined)
+
+  const createMutate = useMutation(() => createContent(
+    'mTLZenxmFraMwlT5FMjbfPpCCaf2',
+    image,
+    title,
+    description,
+    genre,
+    skills,
+    Number(startYear),
+    Number(startMonth),
+    Number(endYear),
+    Number(endMonth),
+    inProduction,
+    url
+  ),{
+    onSuccess:() => {
+      router.push('/')
+      setImage(undefined)
+      setUrl('')
+      setInProduction(false)
+      setGenre('')
+      setTitle('')
+      setDescription('')
+      setSkills([])
+      setStartYear('2021')
+      setStartMonth('1')
+      setEndYear('2021')
+      setEndMonth('1')
+
+    }})
   return (
       <>
         <Typography variant='h5'>Create Content</Typography>
@@ -63,7 +97,7 @@ const ContentTemplate:FC = () => {
           <DateInput year={endYear} month={endMonth} setYear={useStringChangeEvent(setEndYear)} setMonth={useStringChangeEvent(setEndMonth)}/>
         </Box>
         <Box display={"flex"} justifyContent={"center"}>
-          <PrimaryButton text={'Create Content'} onClick={() => console.log(skills)}/>
+          <PrimaryButton text={'Create Content'} onClick={() => createMutate.mutate()}/>
         </Box>
 
       </>

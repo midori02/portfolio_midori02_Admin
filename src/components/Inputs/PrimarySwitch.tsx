@@ -58,7 +58,6 @@ const PrimarySwitch:VFC <Props>= memo((props) => {
     setChecked(event.target.checked);
   },[checked,setChecked]);
 
-  console.log (checked)
   return (
     <FormGroup>
       <Stack direction="row" spacing={1} alignItems="center">
