@@ -9,6 +9,7 @@ import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent,useSelect,useCheckBox} from '../../lib/customHooks'
 import {createContent} from '../../lib/contents'
 import {genreData,skillData} from '../../lib/datas'
+import * as React from "react";
 
 
 const ContentTemplate:FC = () => {
@@ -52,8 +53,8 @@ const ContentTemplate:FC = () => {
       setStartMonth('1')
       setEndYear('2021')
       setEndMonth('1')
-
-    }})
+    }}
+  )
   return (
       <>
         <Typography variant='h5'>Create Content</Typography>
