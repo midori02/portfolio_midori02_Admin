@@ -10,7 +10,7 @@ const DrawerList:VFC = () => {
 
   const listData = [
     {name:'All Contents',icon:<ContentCopyIcon />,path:'/'},
-    {name:'Add Content',icon:<AddPhotoAlternateIcon/>,path:'/content/edit'},
+    {name:'Add Content',icon:<AddPhotoAlternateIcon/>,path:'/content'},
     {name:'My Setting',icon:<SettingsAccessibilityIcon/>,path:'/setting'},
   ]
 

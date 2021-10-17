@@ -23,7 +23,7 @@ const SelectBox:VFC<Props> = memo((props) => {
     size= 'small'
   } = props
   return (
-    <FormControl sx={{mt:1,width:'100%'}}>
+    <FormControl sx={{width:'100%'}}>
       <InputLabel id={`select-box-label-${text}`}>{text}</InputLabel>
       <Select
         size={size}
