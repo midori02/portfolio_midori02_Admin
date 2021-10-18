@@ -6,6 +6,14 @@ export const genreData = [
   {label:'Others',value:'others'},
 ]
 
+export const topPageGenreData = [
+  {label:'All',value:'All'},
+  {label:'Web site',value:'web'},
+  {label:'Graphic design',value:'graphic'},
+  {label:'Editorial',value:'editorial'},
+  {label:'Package',value:'package'},
+  {label:'Others',value:'others'},
+]
 export const skillData = [
   'Planning',
   'Web design',

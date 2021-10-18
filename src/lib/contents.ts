@@ -4,6 +4,28 @@ import {ImageType} from '../types/image'
 import {ContentType} from '../types/content'
 
 
+export const fetchContents = (id:string):Promise<ContentType[] | undefined> => {
+  return new Promise((resolve,reject) => {
+    adminsRef
+      .doc(id)
+      .collection('contents')
+      .get()
+      .then((snapshots) => {
+        const contentData = []
+        snapshots.forEach((snapshot) => {
+          const data = snapshot.data()
+          contentData.push(data)
+        })
+        resolve(contentData)
+      })
+      .catch((error) => {
+        console.error (error)
+        reject(undefined)
+      })
+  })
+}
+
+
 export const createContent = (
   adminId:string,
   image:ImageType[],
