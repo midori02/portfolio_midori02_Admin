@@ -1,4 +1,5 @@
 import {VFC} from 'react';
+import {useRouter} from 'next/router'
 import Image from "next/image";
 import { Box , Typography } from "@mui/material";
 
@@ -10,8 +11,12 @@ type Props = {
 
 const ContentCard:VFC<Props> = (props) => {
   const {content} = props
+  const router = useRouter()
   return (
-    <Box key={content.content_id} sx={{
+    <Box
+      key={content.content_id}
+      onClick={() => router.push(`/content/${content.content_id}`)}
+      sx={{
       width:'calc(100% / 3 - 16px)',
       margin:'16px 8px',
       ":hover": {

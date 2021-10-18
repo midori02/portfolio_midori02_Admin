@@ -25,8 +25,27 @@ export const fetchContents = (id:string):Promise<ContentType[] | undefined> => {
   })
 }
 
+export const fetchContent = (uid:string,contentId:string):Promise<ContentType | undefined> => {
+  return new Promise((resolve,reject) => {
+    adminsRef
+      .doc(uid)
+      .collection('contents')
+      .doc(contentId)
+      .get()
+      .then((document) => {
+        const data = document.data() as ContentType
+        resolve(data)
+      })
+      .catch((error) => {
+        console.error (error)
+        reject(undefined)
+      })
+  })
+}
+
 
 export const createContent = (
+  contentId:string,
   adminId:string,
   image:ImageType[],
   title:string,
@@ -70,31 +89,54 @@ export const createContent = (
       reject(undefined)
       return false
     }
-    const id = adminsRef.doc(adminId).collection('contents').doc().id
-    const contentData:ContentType = {
-      admin_id:adminId,
-      content_id:id,
-      created_at:firebaseTimeStamp.now(),
-      description:description,
-      genre:genre,
-      image:image,
-      period:{
-        start_year:startYear,
-        start_month:startMonth,
-        end_year:endYear,
-        end_month:endMonth,
-        in_production:inProduction
-      },
-      skills:skills,
-      title:title,
-      updated_at:firebaseTimeStamp.now(),
-      url:url
+    let contentData = {}
+    if(!contentId) {
+      contentId = adminsRef.doc(adminId).collection('contents').doc().id
+      contentData = {
+        admin_id:adminId,
+        content_id:contentId,
+        description:description,
+        genre:genre,
+        image:image,
+        period:{
+          start_year:startYear,
+          start_month:startMonth,
+          end_year:endYear,
+          end_month:endMonth,
+          in_production:inProduction
+        },
+        skills:skills,
+        title:title,
+        updated_at:firebaseTimeStamp.now(),
+        url:url
+      }
+    } else {
+      contentData = {
+        admin_id:adminId,
+        content_id:contentId,
+        created_at:firebaseTimeStamp.now(),
+        description:description,
+        genre:genre,
+        image:image,
+        period:{
+          start_year:startYear,
+          start_month:startMonth,
+          end_year:endYear,
+          end_month:endMonth,
+          in_production:inProduction
+        },
+        skills:skills,
+        title:title,
+        updated_at:firebaseTimeStamp.now(),
+        url:url
+      }
     }
+
     adminsRef
       .doc(adminId)
       .collection('contents')
-      .doc(id)
-      .set(contentData)
+      .doc(contentId)
+      .set(contentData,{merge:true})
       .then(() => {
         resolve('create content!!')
       })

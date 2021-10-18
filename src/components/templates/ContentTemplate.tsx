@@ -1,7 +1,7 @@
-import {FC,useState} from 'react';
+import {FC,useState,useEffect} from 'react';
 import {useRouter} from 'next/router'
 import { Box,Typography,Divider } from "@mui/material";
-import {useMutation} from 'react-query'
+import {useMutation,useQueryClient} from 'react-query'
 
 import {ImageUploader} from '../image'
 import {TextInput,SelectBox,CheckBox,DateInput,PrimarySwitch} from '../Inputs'
@@ -9,11 +9,17 @@ import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent,useSelect,useCheckBox} from '../../lib/customHooks'
 import {createContent} from '../../lib/contents'
 import {genreData,skillData} from '../../lib/datas'
-import * as React from "react";
+import { ContentType } from "../../types/content";
 
+type Props = {
+  content?:ContentType
+  uid:string
+}
 
-const ContentTemplate:FC = () => {
+const ContentTemplate:FC<Props> = (props) => {
+  const {content,uid } = props
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [title,setTitle] = useState('')
   const [description,setDescription] = useState('')
   const [url,setUrl] = useState('')
@@ -26,8 +32,24 @@ const ContentTemplate:FC = () => {
   const [inProduction,setInProduction] = useState(false)
   const [image,setImage] = useState(undefined)
 
+  useEffect(() => {
+    if(!content) return
+    setTitle(content.title)
+    setDescription(content.description)
+    setUrl(content.url)
+    setGenre(content.genre)
+    setSkills(content.skills)
+    setStartYear(String(content.period.start_year))
+    setStartMonth(String(content.period.start_month))
+    setEndMonth(String(content.period.end_month))
+    setEndYear(String(content.period.end_year))
+    setInProduction(content.period.in_production)
+    setImage(content.image)
+  },[content])
+
   const createMutate = useMutation(() => createContent(
-    'mTLZenxmFraMwlT5FMjbfPpCCaf2',
+    content ? content.content_id:'',
+    uid,
     image,
     title,
     description,
@@ -42,6 +64,7 @@ const ContentTemplate:FC = () => {
   ),{
     onSuccess:() => {
       router.push('/')
+      queryClient.invalidateQueries('contents')
       setImage(undefined)
       setUrl('')
       setInProduction(false)
