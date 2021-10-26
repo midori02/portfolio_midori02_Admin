@@ -13,7 +13,7 @@ type Props = {
   labelColor?: 'primary' | 'secondary' | 'default'
 }
 
-const SelectBox:VFC<Props> = memo((props) => {
+const SelectBox:VFC<Props> = (props) => {
   const {
     text,
     options,
@@ -44,6 +44,6 @@ const SelectBox:VFC<Props> = memo((props) => {
       </Select>
     </FormControl>
   );
-});
+};
 
-export default SelectBox;
+export default memo(SelectBox);

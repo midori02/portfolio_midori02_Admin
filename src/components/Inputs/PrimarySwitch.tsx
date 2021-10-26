@@ -51,7 +51,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const PrimarySwitch:VFC <Props>= memo((props) => {
+const PrimarySwitch:VFC <Props>= (props) => {
   const {checked,setChecked,offText,onText } = props
 
   const handleChange = useCallback( (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,5 +67,5 @@ const PrimarySwitch:VFC <Props>= memo((props) => {
       </Stack>
     </FormGroup>
   )
-})
-export default PrimarySwitch
+}
+export default memo(PrimarySwitch)

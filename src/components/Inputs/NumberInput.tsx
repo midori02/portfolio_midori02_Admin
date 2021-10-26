@@ -14,7 +14,7 @@ type Props = {
   minNum:number
 }
 
-const NumberInput:VFC<Props> = memo((props) => {
+const NumberInput:VFC<Props> = (props) => {
   const {placeholder,label,variant,onChange,value,minNum,maxNum=99999,size='small',color='primary'} = props
   return <TextField
     InputLabelProps={{
@@ -34,6 +34,6 @@ const NumberInput:VFC<Props> = memo((props) => {
     variant={variant}
     onChange={onChange}
     value={value}/>
-});
+};
 
-export default NumberInput;
+export default memo(NumberInput);

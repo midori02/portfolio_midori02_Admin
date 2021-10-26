@@ -8,7 +8,7 @@ type Props = {
 }
 
 
-const CheckBox:VFC<Props> =memo( (props) => {
+const CheckBox:VFC<Props> = (props) => {
   const {  values, state, onChange } = props
   return (
     <FormGroup row>
@@ -22,6 +22,6 @@ const CheckBox:VFC<Props> =memo( (props) => {
       ))}
     </FormGroup>
   );
-});
+};
 
-export default CheckBox;
+export default memo(CheckBox);

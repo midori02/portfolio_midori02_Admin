@@ -15,7 +15,7 @@ type Props = {
   type?:string
 }
 
-const TextInput:VFC<Props> = memo( (props) => {
+const TextInput:VFC<Props> =  (props) => {
   const {placeholder,label,variant,multiline=false,rows=1,onChange,value,size='small',color='primary',type='text'} = props
   return <TextField
     sx={{ width:'100%' }}
@@ -30,6 +30,6 @@ const TextInput:VFC<Props> = memo( (props) => {
     onChange={onChange}
     value={value}/>
 
-});
+};
 
-export default TextInput;
+export default memo(TextInput);
