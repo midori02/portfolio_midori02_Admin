@@ -15,7 +15,7 @@ type Props = {
 }
 
 const DateInput:FC<Props> = (props) => {
-  const {year,month,setYear,setMonth,minYear=2021,minMonth=1,maxYear=99999,maxMonth=12} = props
+  const {year,month,setYear,setMonth,minYear=2015,minMonth=1,maxYear=99999,maxMonth=12} = props
   return (
     <Box sx={{display:'flex',width:'100%'}}>
       <NumberInput minNum={minYear} maxNum={maxYear} onChange={setYear} value={year}/>

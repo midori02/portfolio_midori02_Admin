@@ -28,7 +28,7 @@ const ContentCard:VFC<Props> = (props) => {
     }}>
       <Image src={content.image[0].path} width={500} height={300} objectFit={'cover'}/>
       <Box sx={{padding:'16px 8px 4px 8px'}}>
-        <Typography>
+        <Typography sx={{fontWeight:'bold'}}>
           {content.title.length > 18
             ? content.title.substr(0,18) + '...'
             : content.title}
