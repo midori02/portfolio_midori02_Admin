@@ -95,6 +95,7 @@ export const createContent = (
       contentData = {
         admin_id:adminId,
         content_id:contentId,
+        created_at:firebaseTimeStamp.now(),
         description:description,
         genre:genre,
         image:image,
@@ -114,7 +115,6 @@ export const createContent = (
       contentData = {
         admin_id:adminId,
         content_id:contentId,
-        created_at:firebaseTimeStamp.now(),
         description:description,
         genre:genre,
         image:image,

@@ -12,10 +12,11 @@ type Props = {
   value:string
   size?:"small" | "medium"
   color?:"error" | "primary" | "secondary" | "info" | "success" | "warning"
+  type?:string
 }
 
 const TextInput:VFC<Props> = memo( (props) => {
-  const {placeholder,label,variant,multiline=false,rows=1,onChange,value,size='small',color='primary'} = props
+  const {placeholder,label,variant,multiline=false,rows=1,onChange,value,size='small',color='primary',type='text'} = props
   return <TextField
     sx={{ width:'100%' }}
     rows={rows}
@@ -24,9 +25,11 @@ const TextInput:VFC<Props> = memo( (props) => {
     placeholder={placeholder}
     label={label}
     variant={variant}
+    type={type}
     multiline={multiline}
     onChange={onChange}
     value={value}/>
+
 });
 
 export default TextInput;
