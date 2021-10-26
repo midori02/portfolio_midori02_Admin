@@ -1,8 +1,11 @@
 import {FC,useState,useCallback} from 'react';
 import { AppBar, Box, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
+import {useMutation,useQueryClient} from 'react-query'
 
 import {DrawerList} from '../Layouts'
+import {Auth} from '../utility'
+import {logOut} from '../../lib/auth'
 
 type Props = {
   pageContents:string
@@ -13,14 +16,22 @@ const BaseLayout:FC<Props> = (props) => {
   const {window,pageContents,children} = props
   const [open,setOpen] = useState(false)
   const drawerWidth = 240
+  const queryClient = useQueryClient()
 
   const handleDrawerToggle = useCallback(() => {
     setOpen(!open);
   },[open,setOpen]);
 
+  const logoutMutate = useMutation( logOut,{
+    onSuccess:() => {
+      queryClient.clear()
+    }
+  })
+
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
+    <Auth>
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
@@ -40,9 +51,15 @@ const BaseLayout:FC<Props> = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {pageContents}
-          </Typography>
+          <Box sx={{width:'100%'}} display={"flex"} justifyContent={'space-between'}>
+            <Typography variant="h6" noWrap component="div">
+              {pageContents}
+            </Typography>
+            <Typography sx={{cursor:'pointer'}} variant="h6" noWrap component="div" onClick={() => logoutMutate.mutate()}>
+              Logout
+            </Typography>
+          </Box>
+
         </Toolbar>
       </AppBar>
       <Box
@@ -84,6 +101,7 @@ const BaseLayout:FC<Props> = (props) => {
         </main>
       </Box>
     </Box>
+    </Auth>
   );
 };
 

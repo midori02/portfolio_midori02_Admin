@@ -1,16 +1,18 @@
 import {FC} from 'react';
 import {useRouter} from 'next/router'
-import {useQuery} from 'react-query'
+import {useQuery,useQueryClient} from 'react-query'
 
 import {ContentTemplate} from '../templates'
 import {getAsString} from '../../lib/helper'
 import {fetchContent} from "../../lib/contents";
+import { admin } from "../../types/admin";
 
 const ContentContainer:FC = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const id = router.query.contentId
-  const uid = 'mTLZenxmFraMwlT5FMjbfPpCCaf2'//login機能実装時に変更
-
+  const user:admin = queryClient.getQueryData('auth')
+  const uid = user.admin_id
   const content = useQuery(
     ['content',getAsString(id)],
     () => fetchContent(uid,getAsString(id)), {
