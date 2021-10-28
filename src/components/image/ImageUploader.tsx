@@ -24,7 +24,7 @@ const ImageUploader:VFC<Props> = (props) => {
   }, [image])
 
   return (
-    <Box>
+    <Box margin={"auto"} >
       {image && image.length > 0 ?
         <Box sx={{display:'flex',justifyContent:'center',cursor:"pointer",'&:hover': { opacity: [0.9, 0.8, 0.7],
           }}}>
@@ -40,15 +40,15 @@ const ImageUploader:VFC<Props> = (props) => {
             <Typography sx={{color:'red'}}>※画像をクリックで削除</Typography>
           </Box>
         </Box>:
-        <Box sx={{'&:hover': { opacity: [0.9, 0.8, 0.7],
+        <Box display={"flex"} justifyContent={"center"} sx={{'&:hover': { opacity: [0.9, 0.8, 0.7],
           }}}>
-          <label htmlFor='image'>
-            <Box sx={{cursor:"pointer",display:'flex',justifyContent:'center',}} >
-              <ImageSearchIcon sx={{width:'42px',height:'42px'}} />
-              <Typography sx={{paddingTop:'16px'}} variant='body1'>画像を選択</Typography>
-            </Box>
-          </label>
-          <input id='image' hidden type="file" onChange={imageUpload} />
+            <label htmlFor='image'>
+              <Box sx={{cursor:"pointer",display:'flex',justifyContent:'center'}} >
+                <ImageSearchIcon sx={{width:'42px',height:'42px'}} />
+                <Typography sx={{paddingTop:'16px'}} variant='body1'>画像を選択</Typography>
+              </Box>
+            </label>
+            <input id='image' hidden type="file" onChange={imageUpload} />
         </Box>
       }
     </Box>
