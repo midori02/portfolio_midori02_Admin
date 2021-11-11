@@ -120,7 +120,7 @@ const ContentTemplate:FC<Props> = (props) => {
           <Typography sx={{width:'240px'}} variant='body1'>End Date</Typography>
           <DateInput year={endYear} month={endMonth} setYear={useStringChangeEvent(setEndYear)} setMonth={useStringChangeEvent(setEndMonth)}/>
         </Box>
-        <Box display={"flex"} justifyContent={"center"}>
+        <Box width={'300px'} margin={'auto'}>
           <PrimaryButton text={'Create Content'} onClick={() => createMutate.mutate()}/>
         </Box>
 

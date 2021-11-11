@@ -13,7 +13,7 @@ type Props = {
 const PrimaryButton:VFC<Props> = (props) => {
   const {text,color='primary',variant='outlined',onClick,size='medium',disabled=false} = props
   return <Button
-    sx={{width:'300px',borderRadius:'16px'}}
+    sx={{width:'100%',borderRadius:'16px'}}
     color={color} variant={variant}
     onClick={onClick}
     size={size}

@@ -12,8 +12,10 @@
 - admin_id: string
 - created_at: FirebaseTimestamp
 - event:string
+- history_id:string
 - year:number
 - month:number
+- role:number
 - updated_at:FirebaseTimestamp
 
 ### contents (admin sub)

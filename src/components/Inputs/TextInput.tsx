@@ -13,11 +13,25 @@ type Props = {
   size?:"small" | "medium"
   color?:"error" | "primary" | "secondary" | "info" | "success" | "warning"
   type?:string
+  margin?:"none" | "dense" | "normal"
 }
 
 const TextInput:VFC<Props> =  (props) => {
-  const {placeholder,label,variant,multiline=false,rows=1,onChange,value,size='small',color='primary',type='text'} = props
+  const {
+    placeholder,
+    label,
+    variant,
+    multiline=false,
+    rows=1,
+    onChange,
+    value,
+    size='small',
+    color='primary',
+    type='text',
+    margin='none'
+  } = props
   return <TextField
+    margin={margin}
     sx={{ width:'100%' }}
     rows={rows}
     color={color}
