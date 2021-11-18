@@ -1,17 +1,19 @@
 export const genreData = [
   {label:'Web site',value:'web'},
-  {label:'Graphic design',value:'graphic'},
-  {label:'Editorial',value:'editorial'},
-  {label:'Package',value:'package'},
+  {label:'LP',value:'lp'},
+  {label:'App',value:'app'},
+  {label:'Graphic',value:'graphic'},
+  {label:'Banner',value:'banner'},
   {label:'Others',value:'others'},
 ]
 
 export const topPageGenreData = [
   {label:'All',value:'All'},
   {label:'Web site',value:'web'},
-  {label:'Graphic design',value:'graphic'},
-  {label:'Editorial',value:'editorial'},
-  {label:'Package',value:'package'},
+  {label:'LP',value:'lp'},
+  {label:'App',value:'app'},
+  {label:'Graphic',value:'graphic'},
+  {label:'Banner',value:'banner'},
   {label:'Others',value:'others'},
 ]
 export const skillData = [
