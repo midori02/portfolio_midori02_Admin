@@ -137,10 +137,15 @@ const ContentTemplate:FC<Props> = (props) => {
           <Typography sx={{width:'240px'}} variant='body1'>End Date</Typography>
           <DateInput year={endYear} month={endMonth} setYear={useStringChangeEvent(setEndYear)} setMonth={useStringChangeEvent(setEndMonth)}/>
         </Box>
-        <Box display={'flex'} justifyContent={'space-between'} width={'600px'} margin={'auto'}>
+        <Box display={'flex'} justifyContent={'space-between'} width={content ?'600px': '300px'} margin={'auto'}>
           <PrimaryButton text={'Create Content'} onClick={() => createMutate.mutate()}/>
-          <Box width={'32px'}/>
-          <PrimaryButton text={'Delete Content'} color={'error'} onClick={() => deleteMutate.mutate()}/>
+          {content &&
+            <>
+              <Box width={'32px'}/>
+              <PrimaryButton text={'Delete Content'} color={'error'} onClick={() => deleteMutate.mutate()}/>
+            </>
+          }
+
         </Box>
 
       </>
