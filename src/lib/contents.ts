@@ -43,6 +43,26 @@ export const fetchContent = (uid:string,contentId:string):Promise<ContentType | 
   })
 }
 
+export const deleteContent = (uid:string,contentId:string):Promise<string | undefined> => {
+  return new Promise((resolve,reject) => {{
+    if (!window.confirm('本当に削除しますか？')) {
+      reject(undefined)
+      return false
+    }
+    adminsRef
+      .doc(uid)
+      .collection('contents')
+      .doc(contentId)
+      .delete()
+      .then(() => {
+        resolve('deleted contents')
+      })
+      .catch((err) => {{
+        console.error (err)
+        reject(undefined)
+      }})
+  }})
+}
 
 export const createContent = (
   contentId:string,

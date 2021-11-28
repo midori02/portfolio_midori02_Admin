@@ -1,5 +1,5 @@
 export const genreData = [
-  {label:'Web site',value:'web'},
+  {label:'Web site',value:'website'},
   {label:'LP',value:'lp'},
   {label:'App',value:'app'},
   {label:'Graphic',value:'graphic'},
@@ -9,7 +9,7 @@ export const genreData = [
 
 export const topPageGenreData = [
   {label:'All',value:'All'},
-  {label:'Web site',value:'web'},
+  {label:'Web site',value:'website'},
   {label:'LP',value:'lp'},
   {label:'App',value:'app'},
   {label:'Graphic',value:'graphic'},
