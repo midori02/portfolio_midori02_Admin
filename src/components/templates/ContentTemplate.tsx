@@ -7,7 +7,7 @@ import {ImageUploader} from '../image'
 import {TextInput,SelectBox,CheckBox,DateInput,PrimarySwitch} from '../Inputs'
 import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent,useSelect,useCheckBox} from '../../lib/customHooks'
-import {createContent} from '../../lib/contents'
+import {createContent,deleteContent} from '../../lib/contents'
 import {genreData,skillData} from '../../lib/datas'
 import { ContentType } from "../../types/content";
 
@@ -78,6 +78,23 @@ const ContentTemplate:FC<Props> = (props) => {
       setEndMonth('1')
     }}
   )
+
+  const deleteMutate = useMutation(() => deleteContent(uid,content.content_id),{
+    onSuccess:() => {
+      router.push('/')
+      setImage(undefined)
+      setUrl('')
+      setInProduction(false)
+      setGenre('')
+      setTitle('')
+      setDescription('')
+      setSkills([])
+      setStartYear('2021')
+      setStartMonth('1')
+      setEndYear('2021')
+      setEndMonth('1')
+    }
+  })
   return (
       <>
         <Typography variant='h5'>Create Content</Typography>
@@ -120,8 +137,15 @@ const ContentTemplate:FC<Props> = (props) => {
           <Typography sx={{width:'240px'}} variant='body1'>End Date</Typography>
           <DateInput year={endYear} month={endMonth} setYear={useStringChangeEvent(setEndYear)} setMonth={useStringChangeEvent(setEndMonth)}/>
         </Box>
-        <Box width={'300px'} margin={'auto'}>
+        <Box display={'flex'} justifyContent={'space-between'} width={content ?'600px': '300px'} margin={'auto'}>
           <PrimaryButton text={'Create Content'} onClick={() => createMutate.mutate()}/>
+          {content &&
+            <>
+              <Box width={'32px'}/>
+              <PrimaryButton text={'Delete Content'} color={'error'} onClick={() => deleteMutate.mutate()}/>
+            </>
+          }
+
         </Box>
 
       </>
