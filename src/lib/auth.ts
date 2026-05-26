@@ -64,6 +64,28 @@ export const logIn = ( user:{ email : string , password : string } ): Promise<st
   })
 }
 
+export const sendPasswordReset = (email: string): Promise<string | undefined> => {
+  return new Promise((resolve, reject) => {
+    if (!isValidRequiredInput(email, 'メールアドレス')) {
+      reject(undefined)
+      return
+    }
+    if (!isValidEmailFormat(email)) {
+      reject(undefined)
+      return
+    }
+    auth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        resolve('Success')
+      })
+      .catch((error) => {
+        console.error(error)
+        reject(error)
+      })
+  })
+}
+
 export const logOut = (): Promise<string | undefined> => {
   return new Promise((resolve, reject) => {
     auth

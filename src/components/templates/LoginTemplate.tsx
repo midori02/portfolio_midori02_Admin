@@ -7,7 +7,7 @@ import {useRouter} from 'next/router'
 import {TextInput} from '../Inputs'
 import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent} from '../../lib/customHooks'
-import {logIn} from '../../lib/auth'
+import {logIn, sendPasswordReset} from '../../lib/auth'
 
 const LoginTemplate:VFC = () => {
   const router = useRouter()
@@ -23,6 +23,20 @@ const LoginTemplate:VFC = () => {
       alert(handle)
     },
   })
+
+  const resetMutate = useMutation(sendPasswordReset, {
+    onSuccess: () => {
+      alert(
+        'パスワード再設定用のメールを送信しました。メール内のリンクから新しいパスワードを設定してください。'
+      )
+    },
+    onError: () => {
+      alert(
+        '再設定メールの送信に失敗しました。登録済みのメールアドレスかご確認ください。'
+      )
+    },
+  })
+
   return (
     <Container maxWidth='sm' component="main">
       <Box
@@ -47,6 +61,15 @@ const LoginTemplate:VFC = () => {
           <TextInput type={'password'} placeholder={'半角6文字以上で入力'} label={'Password'} onChange={useStringChangeEvent(setPassword)} value={password}/>
         </Box>
         <PrimaryButton text={'login'} onClick={() => loginMutate.mutate({email,password})}/>
+        <Box sx={{width:'100%', marginTop: 2}}>
+          <PrimaryButton
+            text={'パスワードを忘れた方（再設定メールを送る）'}
+            variant={'text'}
+            color={'inherit'}
+            disabled={resetMutate.isLoading}
+            onClick={() => resetMutate.mutate(email)}
+          />
+        </Box>
       </Box>
     </Container>
   );
