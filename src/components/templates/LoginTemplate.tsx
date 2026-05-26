@@ -20,9 +20,8 @@ const LoginTemplate:VFC = () => {
       await queryClient.invalidateQueries('auth')
       router.push('/')
     },
-    onError: (error) => {
-      const handle = error === undefined ? 'ユーザーが見つかりません。': 'ログインに失敗しました。'
-      alert(handle)
+    onError: () => {
+      alert('ログインに失敗しました。メールアドレスとパスワードを確認してください。')
     },
   })
 
