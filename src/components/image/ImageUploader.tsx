@@ -21,7 +21,7 @@ const ImageUploader:VFC<Props> = (props) => {
   const deleteImage = useCallback(() => {
     if (!window.confirm('この画像を削除しますか？')) return false
     setImage(undefined)
-  }, [image])
+  }, [setImage])
 
   return (
     <Box margin={"auto"} >
