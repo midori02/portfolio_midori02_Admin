@@ -1,16 +1,21 @@
 import {FC} from 'react';
-import {useQuery,useQueryClient} from 'react-query'
+import {useQuery} from 'react-query'
 
 import {TopTemplate} from '../templates'
 import {fetchContents} from '../../lib/contents'
-import { admin } from "../../types/admin";
+import { Loading } from '../utility'
+import { admin } from '../../types/admin'
 
 const TopContainer:FC = () => {
-  const queryClient = useQueryClient()
-  const user:admin = queryClient.getQueryData('auth')
-  const userId = user.admin_id
-  const contents = useQuery('contents', () =>fetchContents(userId) )
-  return<TopTemplate contents={contents.data}/>
+  const { data: user, isLoading: authLoading } = useQuery<admin>('auth')
+  const adminId = user?.admin_id ?? ''
+  const contents = useQuery('contents', () => fetchContents(adminId), {
+    enabled: !!adminId,
+  })
+
+  if (authLoading || !user) return <Loading />
+
+  return <TopTemplate contents={contents.data}/>
 };
 
 export default TopContainer;
