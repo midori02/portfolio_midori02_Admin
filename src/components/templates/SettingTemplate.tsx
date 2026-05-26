@@ -7,10 +7,10 @@ import {History} from '../../types/histories'
 import {TextInput,DateInput} from '../Inputs'
 import {ImageUploader} from '../image'
 import {PrimaryButton} from "../Buttons";
-import {HistoryCard} from '../Cards'
+import {HistoryList} from '../Cards'
 import {useStringChangeEvent} from '../../lib/customHooks'
 import {updateAdmin} from '../../lib/admin'
-import {createHistory,updateHistoryRole,removeHistory} from '../../lib/histories'
+import {createHistory} from '../../lib/histories'
 import { AUTH_QUERY_KEY } from '../../lib/authQuery'
 import { normalizeImages } from '../../lib/imageUtils'
 import { ImageType } from '../../types/image'
@@ -76,25 +76,6 @@ const SettingTemplate:FC<Props> = (props) => {
     }
   )
 
-  const deleteMutate = useMutation(
-    ( data:{ adminId : string , id : string,currentNum:number,deleteNum:number }) => removeHistory(data.adminId,data.id,data.currentNum,data.deleteNum),{
-      onSuccess:() => {
-        queryClient.invalidateQueries('histories')
-      }
-    })
-
-  const historyUpdateRoleMutate = useMutation(
-    (roleData:{
-      adminId:string,
-      historyId:string,
-      update:number,
-      currentNum:number
-    }) => updateHistoryRole(roleData.adminId,roleData.historyId,roleData.update,roleData.currentNum),{
-      onSuccess:() => {
-        queryClient.invalidateQueries('histories')
-      }
-    })
-
   return (
     <Container sx={{display:'flex',minHeight:'100vh'}}>
       <Box width={'50%'} padding={'0 32px 0 16px'}>
@@ -146,35 +127,11 @@ const SettingTemplate:FC<Props> = (props) => {
       </Box>
       <Box sx={{borderLeft:'1px solid black'}} width='50%' textAlign={'center'} paddingLeft={'32px'}>
         <Typography variant={'h4'}>Histories</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          左の ≡ をドラッグして並び替え
+        </Typography>
         <Box margin={'32px 0'} >
-          {histories && histories.length > 0 ?
-            histories.map((history) => (
-              <HistoryCard
-                key={history.history_id}
-                length={histories.length}
-                upRole={() => historyUpdateRoleMutate.mutate( {
-                  adminId:history.admin_id ,
-                  historyId:history.history_id ,
-                  update:history.role - 1 ,
-                  currentNum:history.role
-                })}
-                downRole={() => historyUpdateRoleMutate.mutate( {
-                  adminId:history.admin_id ,
-                  historyId:history.history_id ,
-                  update:history.role + 1 ,
-                  currentNum:history.role
-                })}
-                history={history}
-                deleteFunc={() => deleteMutate.mutate({
-                  adminId:history.admin_id,
-                  id:history.history_id,
-                  currentNum:histories.length,
-                  deleteNum:history.role
-                })}
-              />
-            ))
-            :<Typography>Histories not found...</Typography>
-          }
+          <HistoryList adminId={admin.admin_id} histories={histories} />
         </Box>
       </Box>
     </Container>
