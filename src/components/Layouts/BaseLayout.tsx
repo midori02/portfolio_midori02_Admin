@@ -10,6 +10,7 @@ import {logOut} from '../../lib/auth'
 type Props = {
   pageContents:string
   window?: () => Window
+  children?: React.ReactNode
 }
 
 const BaseLayout:FC<Props> = (props) => {
