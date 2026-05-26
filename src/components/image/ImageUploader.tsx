@@ -32,6 +32,7 @@ const ImageUploader:VFC<Props> = (props) => {
             <Image
               className="cursor-pointer"
               src={image[0].path}
+              alt={imageName || ''}
               height={height}
               width={width}
               onClick={deleteImage}

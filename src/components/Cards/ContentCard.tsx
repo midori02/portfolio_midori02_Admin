@@ -26,7 +26,7 @@ const ContentCard:VFC<Props> = (props) => {
       padding:'1px',
       cursor:'pointer'
     }}>
-      <Image src={content.image[0].path} width={500} height={300} objectFit={'cover'}/>
+      <Image src={content.image[0].path} alt={content.title || ''} width={500} height={300} objectFit={'cover'}/>
       <Box sx={{padding:'16px 8px 4px 8px'}}>
         <Typography sx={{fontWeight:'bold'}}>
           {content.title.length > 18
