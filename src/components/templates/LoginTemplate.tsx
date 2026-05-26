@@ -1,7 +1,7 @@
 import {VFC,useState} from 'react';
 import { Container,Box,Avatar,Typography,CssBaseline } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {useRouter} from 'next/router'
 
 import {TextInput} from '../Inputs'
@@ -11,11 +11,13 @@ import {logIn, sendPasswordReset} from '../../lib/auth'
 
 const LoginTemplate:VFC = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
 
   const loginMutate = useMutation(logIn, {
-    onSuccess:() => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries('auth')
       router.push('/')
     },
     onError: (error) => {
