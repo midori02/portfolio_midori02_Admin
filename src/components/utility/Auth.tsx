@@ -1,19 +1,48 @@
-import React, { FC } from 'react'
-import { useQuery,useQueryClient } from 'react-query'
-import { listenAuthState } from '../../lib/auth'
-import { Loading } from '../utility'
-import Router from 'next/router'
+import React, { FC, useEffect } from 'react'
+import { useQueryClient } from 'react-query'
+import { useRouter } from 'next/router'
+import { subscribeAuthState } from '../../lib/auth'
+import { AUTH_QUERY_KEY, useAuthQuery } from '../../lib/authQuery'
+import { PageSpinner } from '../utility'
 
-const Auth: FC = ({ children }) => {
-  const { data,isLoading } = useQuery('auth', () => listenAuthState())
-  if(isLoading) return <Loading/>
+type Props = {
+  children?: React.ReactNode
+  /** 未認証でも表示するページ（/login 配下は自動で public） */
+  publicRoute?: boolean
+}
 
-  if (data || Router.pathname === '/login') {
+const Auth: FC<Props> = ({ children, publicRoute = false }) => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const { data, isLoading, isFetched } = useAuthQuery()
+
+  const isPublicRoute = publicRoute || router.pathname.startsWith('/login')
+
+  useEffect(() => {
+    const unsubscribe = subscribeAuthState((adminUser) => {
+      queryClient.setQueryData(AUTH_QUERY_KEY, adminUser)
+    })
+    return () => unsubscribe()
+  }, [queryClient])
+
+  useEffect(() => {
+    if (isPublicRoute || !isFetched || data) return
+    router.replace('/login')
+  }, [isPublicRoute, isFetched, data, router])
+
+  if (isPublicRoute) {
     return <>{children}</>
-  } else {
-    Router.push('/login')
-    return <></>
   }
+
+  if (isLoading || !isFetched) {
+    return <PageSpinner />
+  }
+
+  if (!data) {
+    return <PageSpinner />
+  }
+
+  return <>{children}</>
 }
 
 export default Auth

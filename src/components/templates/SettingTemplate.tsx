@@ -1,4 +1,4 @@
-import {FC,useState,useEffect} from 'react';
+import {FC,useState,useEffect,useCallback} from 'react';
 import {useMutation,useQueryClient} from 'react-query'
 import {Box,Container,Typography,Divider} from '@mui/material'
 
@@ -11,6 +11,9 @@ import {HistoryCard} from '../Cards'
 import {useStringChangeEvent} from '../../lib/customHooks'
 import {updateAdmin} from '../../lib/admin'
 import {createHistory,updateHistoryRole,removeHistory} from '../../lib/histories'
+import { AUTH_QUERY_KEY } from '../../lib/authQuery'
+import { normalizeImages } from '../../lib/imageUtils'
+import { ImageType } from '../../types/image'
 
 type Props ={
   admin:admin
@@ -22,24 +25,37 @@ const SettingTemplate:FC<Props> = (props) => {
   const queryClient = useQueryClient()
   const [name,setName] = useState('')
   const [description,setDescription] = useState('')
-  const [image,setImage] = useState(undefined)
+  const [image,setImage] = useState<ImageType[] | undefined>(undefined)
   const [year,setYear] = useState('2021')
   const [month,setMonth] = useState('1')
   const [text,setText] = useState('')
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  const onNameChange = useStringChangeEvent(setName)
+  const onDescriptionChange = useStringChangeEvent(setDescription)
+  const onYearChange = useStringChangeEvent(setYear)
+  const onMonthChange = useStringChangeEvent(setMonth)
+  const onTextChange = useStringChangeEvent(setText)
 
   useEffect(() => {
     if(!admin) return
     setName(admin.name)
     setDescription(admin.description)
-    setImage(admin.image)
+    setImage(normalizeImages(admin.image))
   },[admin])
 
-  const updateMutate = useMutation(() =>updateAdmin(admin.admin_id,name,description,image),{
-    onSuccess:() => {
-      queryClient.invalidateQueries('auth')
-      alert('更新が完了しました。')
+  const handleUpdateAdmin = useCallback(async () => {
+    setIsUpdating(true)
+    try {
+      const result = await updateAdmin(admin.admin_id, name, description, image)
+      if (result) {
+        await queryClient.invalidateQueries(AUTH_QUERY_KEY)
+        alert('更新が完了しました。')
+      }
+    } finally {
+      setIsUpdating(false)
     }
-  })
+  }, [admin.admin_id, name, description, image, queryClient])
 
   const historyMutate = useMutation(() => createHistory(
     {
@@ -89,18 +105,22 @@ const SettingTemplate:FC<Props> = (props) => {
           margin={'normal'}
           label={'Name'}
           value={name}
-          onChange={useStringChangeEvent(setName)}
+          onChange={onNameChange}
         />
         <TextInput
           margin={'normal'}
           label={'Description'}
           value={description}
-          onChange={useStringChangeEvent(setDescription)}
+          onChange={onDescriptionChange}
           multiline={true}
           rows={4}
         />
         <Box width={'200px'} margin={'auto'} paddingTop={'30px'}>
-          <PrimaryButton text={'内容を更新'} onClick={() => updateMutate.mutate()}/>
+          <PrimaryButton
+            text={isUpdating ? '更新中…' : '内容を更新'}
+            disabled={isUpdating}
+            onClick={handleUpdateAdmin}
+          />
         </Box>
         <Divider sx={{margin:'32px 0'}}/>
         <Box>
@@ -108,14 +128,14 @@ const SettingTemplate:FC<Props> = (props) => {
           <DateInput
             year={year}
             month={month}
-            setYear={useStringChangeEvent(setYear)}
-            setMonth={useStringChangeEvent(setMonth)}
+            setYear={onYearChange}
+            setMonth={onMonthChange}
           />
           <TextInput
             margin={'normal'}
             label={'History text'}
             value={text}
-            onChange={useStringChangeEvent(setText)}
+            onChange={onTextChange}
             multiline={true}
             rows={2}
           />

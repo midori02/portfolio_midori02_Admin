@@ -1,0 +1,30 @@
+---
+description: 修正後は dev サーバーを再起動し HTTP スモークで起動確認する
+alwaysApply: true
+---
+
+# Dev サーバー再起動・起動確認（必須）
+
+このプロジェクトで **実行時に影響する修正**（`src/`、`scripts/`、`package.json`、`next.config.js`、`tsconfig.json` 等）を行ったら、作業完了前に **必ず** dev サーバーを再起動し、起動確認まで行う。
+
+## 手順
+
+1. Node 18 を使う（`nvm use 18`）
+2. 一括再起動 + スモーク:
+   ```bash
+   bash scripts/restart-and-verify-dev.sh
+   ```
+   または `npm run verify:dev`
+3. **6 ルートすべて PASS** になるまで完了としない
+4. FAIL 時はログ（`/tmp/portfolio-midori02-dev.log`）を確認し、依存関係不整合なら `npm install` 後に再実行
+
+## ユーザー報告前の確認
+
+- `ERR_CONNECTION_REFUSED`（Error -102）を防ぐため、**ブラウザで開く URL を案内する前に** curl またはスモークで 200 を確認する
+- dev サーバーは **1 プロセスのみ**（ポート 3000）。3001/3002 に逃がさない
+- `npm run verify:build` だけでは不十分。build PASS でも dev 未起動・`node_modules` 不整合で接続できないことがある
+
+## 例外
+
+- ドキュメントのみの変更
+- ユーザーが「サーバー確認不要」と明示した場合

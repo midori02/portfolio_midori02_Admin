@@ -1,28 +1,34 @@
 import {VFC,useState} from 'react';
 import { Container,Box,Avatar,Typography,CssBaseline } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {useMutation} from 'react-query'
+import {useMutation, useQueryClient} from 'react-query'
 import {useRouter} from 'next/router'
 
 import {TextInput} from '../Inputs'
 import {PrimaryButton} from '../Buttons'
 import {useStringChangeEvent} from '../../lib/customHooks'
 import {logIn} from '../../lib/auth'
+import { AUTH_QUERY_KEY } from '../../lib/authQuery'
 
 const LoginTemplate:VFC = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
 
+  const onEmailChange = useStringChangeEvent(setEmail)
+  const onPasswordChange = useStringChangeEvent(setPassword)
+
   const loginMutate = useMutation(logIn, {
-    onSuccess:() => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(AUTH_QUERY_KEY)
       router.push('/')
     },
-    onError: (error) => {
-      const handle = error === undefined ? 'ユーザーが見つかりません。': 'ログインに失敗しました。'
-      alert(handle)
+    onError: () => {
+      alert('ログインに失敗しました。メールアドレスとパスワードを確認してください。')
     },
   })
+
   return (
     <Container maxWidth='sm' component="main">
       <Box
@@ -41,12 +47,20 @@ const LoginTemplate:VFC = () => {
           Login
         </Typography>
         <Box sx={{width:"100%",marginBottom:"48px"}}>
-          <TextInput placeholder={'sample@sample.com'} label={'Email'} onChange={useStringChangeEvent(setEmail)} value={email}/>
+          <TextInput placeholder={'sample@sample.com'} label={'Email'} onChange={onEmailChange} value={email}/>
         </Box>
         <Box sx={{width:"100%",marginBottom:"48px"}}>
-          <TextInput type={'password'} placeholder={'半角6文字以上で入力'} label={'Password'} onChange={useStringChangeEvent(setPassword)} value={password}/>
+          <TextInput type={'password'} placeholder={'半角6文字以上で入力'} label={'Password'} onChange={onPasswordChange} value={password}/>
         </Box>
         <PrimaryButton text={'login'} onClick={() => loginMutate.mutate({email,password})}/>
+        <Box sx={{width:'100%', marginTop: 2}}>
+          <PrimaryButton
+            text={'パスワードを忘れた方（再設定メールを送る）'}
+            variant={'text'}
+            color={'inherit'}
+            onClick={() => router.push('/login/reset')}
+          />
+        </Box>
       </Box>
     </Container>
   );

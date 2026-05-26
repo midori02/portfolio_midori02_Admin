@@ -1,26 +1,34 @@
 import {adminsRef,firebaseTimeStamp} from '../firebase/index'
 import { isValidRequiredInput } from "./validation";
+import { ImageType } from '../types/image';
 
 export const updateAdmin = (
   id:string,
   name:string,
   description:string,
-  image:[{path:string,id:string}]
+  image:ImageType[] | undefined
 ):Promise<string | undefined> => {
   return new Promise((resolve,reject) => {
+    const cancel = () => resolve(undefined)
+
     if (!isValidRequiredInput(name)) {
       alert('Nameが未入力です。ご確認ください。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
     if (!isValidRequiredInput(description)) {
       alert('説明文が未入力です。ご確認ください。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
-    if (!window.confirm('この内容で作成しますか？')) {
-      reject(undefined)
-      return false
+    if (!image || image.length === 0) {
+      alert('画像を選択してください。')
+      cancel()
+      return
+    }
+    if (!window.confirm('この内容で更新しますか？')) {
+      cancel()
+      return
     }
     const userData = {
       admin_id:id,

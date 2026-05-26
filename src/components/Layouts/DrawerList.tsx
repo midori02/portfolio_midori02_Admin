@@ -1,18 +1,34 @@
-import {VFC} from 'react';
-import Link from "next/link";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import SettingsAccessibilityIcon from "@mui/icons-material/SettingsAccessibility";
-import { Divider , List , ListItem , ListItemIcon , ListItemText , Toolbar } from "@mui/material";
+import { VFC } from 'react'
+import { useRouter } from 'next/router'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility'
+import {
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+} from '@mui/material'
 
+type Props = {
+  onNavigate?: () => void
+}
 
-const DrawerList:VFC = () => {
+const DrawerList: VFC<Props> = ({ onNavigate }) => {
+  const router = useRouter()
 
   const listData = [
-    {name:'All Contents',icon:<ContentCopyIcon />,path:'/'},
-    {name:'Add Content',icon:<AddPhotoAlternateIcon/>,path:'/content'},
-    {name:'My Setting',icon:<SettingsAccessibilityIcon/>,path:'/setting'},
+    { name: 'All Contents', icon: <ContentCopyIcon />, path: '/' },
+    { name: 'Add Content', icon: <AddPhotoAlternateIcon />, path: '/content' },
+    { name: 'My Setting', icon: <SettingsAccessibilityIcon />, path: '/setting' },
   ]
+
+  const isSelected = (path: string) => {
+    if (path === '/') return router.pathname === '/'
+    return router.pathname === path || router.pathname.startsWith(`${path}/`)
+  }
 
   return (
     <div>
@@ -20,20 +36,25 @@ const DrawerList:VFC = () => {
       <Divider />
       <List>
         {listData.map((list) => (
-          <Link key={list.name} href={list.path}>
-            <a style={{textDecoration:"none",color:'black'}}>
-              <ListItem button >
-                <ListItemIcon>
-                  {list.icon}
-                </ListItemIcon>
-                <ListItemText primary={list.name} />
-              </ListItem>
-            </a>
-          </Link>
+          <ListItem
+            key={list.name}
+            button
+            selected={isSelected(list.path)}
+            onClick={() => {
+              onNavigate?.()
+              if (!isSelected(list.path)) {
+                router.push(list.path)
+              }
+            }}
+            sx={{ color: 'black', cursor: 'pointer' }}
+          >
+            <ListItemIcon>{list.icon}</ListItemIcon>
+            <ListItemText primary={list.name} />
+          </ListItem>
         ))}
       </List>
     </div>
-  );
-};
+  )
+}
 
-export default DrawerList;
+export default DrawerList
