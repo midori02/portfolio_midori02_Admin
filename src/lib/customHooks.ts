@@ -64,6 +64,6 @@ export const useImageUpload = (update: Dispatch<SetStateAction<ImageType[]>>, im
           })
       })
     },
-    [update]
+    [update, imageName]
   )
 }
