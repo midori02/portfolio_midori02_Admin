@@ -56,7 +56,7 @@ const PrimarySwitch:VFC <Props>= (props) => {
 
   const handleChange = useCallback( (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
-  },[checked,setChecked]);
+  },[setChecked]);
 
   return (
     <FormGroup>

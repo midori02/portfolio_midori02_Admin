@@ -1,17 +1,19 @@
-import {FC,useEffect} from 'react';
-import {useQueryClient} from "react-query";
+import {FC, useEffect} from 'react';
 import {useRouter} from 'next/router'
 
-import {LoginTemplate} from '../../components/templates'
-import { admin } from "../../types/admin";
+import {LoginTemplate} from '../templates'
+import { useAuthQuery } from '../../lib/authQuery'
 
 const LoginContainer:FC = () => {
   const router = useRouter()
-  const queryClient = useQueryClient()
-  const user:admin = queryClient.getQueryData('auth')
-  if(user) {
-    router.push('/')
-  }
+  const { data: user } = useAuthQuery()
+
+  useEffect(() => {
+    if (user) {
+      router.push('/')
+    }
+  }, [user, router])
+
   return <LoginTemplate/>
 };
 

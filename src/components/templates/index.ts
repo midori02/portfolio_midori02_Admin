@@ -1,4 +1,6 @@
 export {default as TopTemplate} from './TopTemplate'
 export {default as ContentTemplate} from './ContentTemplate'
 export {default as LoginTemplate} from './LoginTemplate'
+export {default as ResetPasswordTemplate} from './ResetPasswordTemplate'
+export {default as ResetPasswordSentTemplate} from './ResetPasswordSentTemplate'
 export {default as SettingTemplate} from './SettingTemplate'

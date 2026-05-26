@@ -23,6 +23,10 @@ const BaseLayout:FC<Props> = (props) => {
     setOpen(!open);
   },[open,setOpen]);
 
+  const handleDrawerNavigate = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   const logoutMutate = useMutation( logOut,{
     onSuccess:() => {
       queryClient.clear()
@@ -82,7 +86,7 @@ const BaseLayout:FC<Props> = (props) => {
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          <DrawerList/>
+          <DrawerList onNavigate={handleDrawerNavigate}/>
         </Drawer>
         <Drawer
           variant="permanent"
@@ -92,7 +96,7 @@ const BaseLayout:FC<Props> = (props) => {
           }}
           open
         >
-          <DrawerList/>
+          <DrawerList onNavigate={handleDrawerNavigate}/>
         </Drawer>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
