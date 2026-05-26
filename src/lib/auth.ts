@@ -5,6 +5,9 @@ import { admin } from '../types/admin'
 import { normalizeImages } from './imageUtils'
 import { isValidRequiredInput, isValidEmailFormat } from './validation'
 
+const AUTH_HARD_TIMEOUT_MS = 12000
+const ADMIN_DOC_TIMEOUT_MS = 10000
+
 const mapAdminSnapshot = (data: firebase.firestore.DocumentData): admin => ({
   created_at: data.created_at,
   description: data.description,
@@ -15,19 +18,49 @@ const mapAdminSnapshot = (data: firebase.firestore.DocumentData): admin => ({
   updated_at: data.updated_at,
 })
 
+const withTimeout = async <T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string
+): Promise<T | undefined> => {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<undefined>((resolve) => {
+        timer = setTimeout(() => {
+          console.warn(`${label}: timeout after ${ms}ms`)
+          resolve(undefined)
+        }, ms)
+      }),
+    ])
+  } catch (error) {
+    console.error(error)
+    return undefined
+  } finally {
+    if (timer) clearTimeout(timer)
+  }
+}
+
 const loadAdminFromAuthUser = async (
   user: firebase.User
 ): Promise<admin | undefined> => {
-  const snapshot = await adminsRef.doc(user.uid).get()
-  const data = snapshot.data()
-  if (!data) {
-    console.error('Does not exist user data for uid:', user.uid)
-    return undefined
-  }
-  return mapAdminSnapshot({
-    ...data,
-    admin_id: data.admin_id ?? user.uid,
-  })
+  return withTimeout(
+    (async () => {
+      const snapshot = await adminsRef.doc(user.uid).get()
+      const data = snapshot.data()
+      if (!data) {
+        console.error('Does not exist user data for uid:', user.uid)
+        return undefined
+      }
+      return mapAdminSnapshot({
+        ...data,
+        admin_id: data.admin_id ?? user.uid,
+      })
+    })(),
+    ADMIN_DOC_TIMEOUT_MS,
+    'loadAdminFromAuthUser'
+  )
 }
 
 /** 初回の auth クエリ用（Firebase 認証の初期化完了を待つ） */
@@ -47,8 +80,14 @@ export const fetchAuthUser = (): Promise<admin | undefined> => {
     const finish = (value: admin | undefined) => {
       if (settled) return
       settled = true
+      clearTimeout(hardTimeout)
       resolve(value)
     }
+
+    const hardTimeout = setTimeout(() => {
+      console.warn('fetchAuthUser: hard timeout, treating as logged out')
+      finish(undefined)
+    }, AUTH_HARD_TIMEOUT_MS)
 
     const current = auth.currentUser
     if (current) {
@@ -56,14 +95,8 @@ export const fetchAuthUser = (): Promise<admin | undefined> => {
       return
     }
 
-    const timeout = setTimeout(() => {
-      console.warn('fetchAuthUser: auth state timeout, treating as logged out')
-      finish(undefined)
-    }, 10000)
-
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       unsubscribe()
-      clearTimeout(timeout)
       finish(await resolveAdmin(user))
     })
   })

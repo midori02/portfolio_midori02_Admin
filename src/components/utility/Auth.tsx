@@ -39,7 +39,7 @@ const Auth: FC<Props> = ({ children, publicRoute = false }) => {
   }
 
   if (!data) {
-    return <PageSpinner />
+    return null
   }
 
   return <>{children}</>
