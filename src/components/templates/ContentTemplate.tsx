@@ -79,7 +79,12 @@ const ContentTemplate:FC<Props> = (props) => {
     }}
   )
 
-  const deleteMutate = useMutation(() => deleteContent(uid,content.content_id),{
+  const deleteMutate = useMutation(() => {
+    if (!content?.content_id) {
+      return Promise.reject(new Error('Content is not loaded'))
+    }
+    return deleteContent(uid, content.content_id)
+  }, {
     onSuccess:() => {
       router.push('/')
       setImage(undefined)
@@ -139,10 +144,15 @@ const ContentTemplate:FC<Props> = (props) => {
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} width={content ?'600px': '300px'} margin={'auto'}>
           <PrimaryButton text={'Create Content'} onClick={() => createMutate.mutate()}/>
-          {content &&
+          {content?.content_id &&
             <>
               <Box width={'32px'}/>
-              <PrimaryButton text={'Delete Content'} color={'error'} onClick={() => deleteMutate.mutate()}/>
+              <PrimaryButton
+                text={'Delete Content'}
+                color={'error'}
+                disabled={deleteMutate.isLoading}
+                onClick={() => deleteMutate.mutate()}
+              />
             </>
           }
 
