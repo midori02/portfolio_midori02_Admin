@@ -6,10 +6,13 @@
   },
   "private": true,
   "scripts": {
+    "predev": "node scripts/check-node-version.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "verify:build": "npm run build && npm run lint",
+    "verify:smoke": "bash scripts/smoke-test-routes.sh"
   },
   "dependencies": {
     "@emotion/cache": "^11.4.0",

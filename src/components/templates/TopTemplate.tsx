@@ -25,7 +25,7 @@ const TopTemplate:FC<Props> = (props) => {
           <SelectBox options={topPageGenreData} select={useSelect(setGenre)} value={genre}/>
         </Box>
       </Box>
-      <Box display={"flex"} justifyContent={'flex-start'} flexWrap={'wrap'}>
+      <Box display="flex" justifyContent="flex-start" flexWrap="wrap" sx={{ width: '100%' }}>
         {selectedContents && selectedContents.length > 0 ?
           selectedContents.map((content) => (
             <ContentCard key={content.content_id} content={content}/>

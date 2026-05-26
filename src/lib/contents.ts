@@ -44,10 +44,10 @@ export const fetchContent = (uid:string,contentId:string):Promise<ContentType | 
 }
 
 export const deleteContent = (uid:string,contentId:string):Promise<string | undefined> => {
-  return new Promise((resolve,reject) => {{
+  return new Promise((resolve,reject) => {
     if (!window.confirm('本当に削除しますか？')) {
-      reject(undefined)
-      return false
+      resolve(undefined)
+      return
     }
     adminsRef
       .doc(uid)
@@ -57,11 +57,11 @@ export const deleteContent = (uid:string,contentId:string):Promise<string | unde
       .then(() => {
         resolve('deleted contents')
       })
-      .catch((err) => {{
+      .catch((err) => {
         console.error (err)
         reject(undefined)
-      }})
-  }})
+      })
+  })
 }
 
 export const createContent = (
@@ -79,35 +79,40 @@ export const createContent = (
   inProduction:boolean,
   url:string
 ):Promise<string | undefined> => {
-  return new Promise((resolve,reject) => {
-    if(image === undefined) {
+  return new Promise((resolve, reject) => {
+    const cancel = () => resolve(undefined)
+
+    if (!image || image.length === 0) {
       alert('画像を選択して下さい。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
     if (!isValidRequiredInput(title)) {
       alert('タイトルが未入力です。ご確認ください。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
     if (!isValidRequiredInput(description)) {
       alert('説明が未入力です。ご確認ください。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
     if (!isValidRequiredInput(genre)) {
       alert('ジャンルを指定して下さい。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
-    if(skills.length === 0) {
+    if (!skills || skills.length === 0) {
       alert('スキルが選択されていません。')
-      reject(undefined)
-      return false
+      cancel()
+      return
     }
-    if (!window.confirm('この内容で作成しますか？')) {
-      reject(undefined)
-      return false
+    const confirmMessage = contentId
+      ? 'この内容で更新しますか？'
+      : 'この内容で作成しますか？'
+    if (!window.confirm(confirmMessage)) {
+      cancel()
+      return
     }
     let contentData = {}
     if(!contentId) {

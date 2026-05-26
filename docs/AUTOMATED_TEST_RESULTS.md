@@ -51,7 +51,40 @@ dev 起動後、各パスが応答することを確認する項目（手動ま�
 | `/content` | 200 |
 | `/setting` | 200 |
 
-**2026-05-26 実施結果（`fix/integration-all-fixes` + dev @ 127.0.0.1:3010）:**
+**2026-05-26 TEST_CASES §1 実施（Agent / fix/integration-all-fixes）:**
+
+```
+node -v          → v18.20.8
+npm run build    → exit 0
+npm run lint     → ✔ No ESLint warnings or errors
+verify:smoke     → 6/6 routes PASS (200)
+```
+
+§3〜§7 は `docs/TEST_CASES.md` にコード・HTTP・§8 回帰結果を反映済み。
+
+**2026-05-26 再実施（修正後・Node 18・dev @ 127.0.0.1:3000 単一プロセス）:**
+
+```bash
+nvm use 18
+npm run verify:build          # build + lint → PASS
+npm run verify:smoke          # 6 ルート HTTP → すべて PASS
+# ページ遷移シミュレーション 25 リクエスト → PASS（missing required error なし）
+```
+
+| パス | ステータス | 備考 |
+|------|------------|------|
+| `/` | 200 PASS | |
+| `/login` | 200 PASS | |
+| `/login/reset` | 200 PASS | |
+| `/login/reset/sent` | 200 PASS | |
+| `/content` | 200 PASS | |
+| `/setting` | 200 PASS | |
+
+**再発原因（ユーザー環境）:** Node v16.20.2 で dev 起動 + ポート 3000/3001/3002 に複数 dev プロセス → `missing required error components, refreshing...`
+
+**対策:** README「開発時のトラブルシュート」、`scripts/start-dev.sh`、`npm run verify:smoke` を参照。
+
+**2026-05-26 初回実施（`fix/integration-all-fixes` + dev @ 127.0.0.1:3010）:****
 
 | パス | ステータス |
 |------|------------|
@@ -71,6 +104,15 @@ nvm use 18
 cd /path/to/portfolio_midori02_Admin
 git fetch origin
 bash scripts/run-automated-tests.sh
+```
+
+### マージ前チェック（推奨）
+
+```bash
+nvm use 18
+npm run verify:build                    # dev 不要
+bash scripts/start-dev.sh             # ターミナル A（1 プロセスのみ）
+npm run verify:smoke                  # ターミナル B
 ```
 
 統合ブランチのみ:
