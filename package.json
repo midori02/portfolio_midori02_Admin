@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "verify:build": "npm run build && npm run lint",
-    "verify:smoke": "bash scripts/smoke-test-routes.sh"
+    "verify:smoke": "bash scripts/smoke-test-routes.sh",
+    "verify:dev": "bash scripts/restart-and-verify-dev.sh"
   },
   "dependencies": {
     "@emotion/cache": "^11.4.0",
