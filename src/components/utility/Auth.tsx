@@ -4,7 +4,7 @@ import { listenAuthState } from '../../lib/auth'
 import { Loading } from '../utility'
 import Router from 'next/router'
 
-const Auth: FC = ({ children }) => {
+const Auth: FC<{ children?: React.ReactNode }> = ({ children }) => {
   const { data,isLoading } = useQuery('auth', () => listenAuthState())
   if(isLoading) return <Loading/>
 
